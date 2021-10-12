@@ -1,14 +1,28 @@
 package main
 import (
+	"flag"
 	"log"
 	"net/http"
+	"os"
 )
+
+type application struct {
+	errorLog *log.Logger
+
+}
 func main() {
+	addr:= flag.String("addr", ":4000", "HTTP Network Address")
+	flag.Parse()
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog:= log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	//i could have used log.Llongfile  full file path in the log output
+	//I can also force the logger to use UTC datetimes, instead of local ones, by using the log.LUTC flag
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet", showSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
-
 
 	// Create a file server which serves files out of the "./ui/static" directo
 	// Note that the path given to the http.Dir function is relative to the pro
@@ -16,7 +30,22 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Println("Starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
+	server:= http.Server{
+		Addr: *addr,
+		ErrorLog: errorLog,
+		Handler: mux,
+	}
+
+
+	infoLog.Printf("Starting server on %s", *addr)
+	err:= server.ListenAndServe()
+
+	//err := http.ListenAndServe(*addr, mux)
+	errorLog.Fatal(err)
+
 }
+
+
+//As a rule of thumb, you should avoid using the Panic() and Fatal()
+//variations outside of your main() function — it’s good practice to
+//return errors instead, and only panic or exit directly from main().
