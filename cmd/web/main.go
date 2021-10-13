@@ -8,7 +8,7 @@ import (
 
 type application struct {
 	errorLog *log.Logger
-
+	infoLog  *log.Logger
 }
 func main() {
 	addr:= flag.String("addr", ":4000", "HTTP Network Address")
@@ -19,10 +19,15 @@ func main() {
 	//i could have used log.Llongfile  full file path in the log output
 	//I can also force the logger to use UTC datetimes, instead of local ones, by using the log.LUTC flag
 
+	app:= &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet", showSnippet)
-	mux.HandleFunc("/snippet/create", createSnippet)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/snippet", app.showSnippet)
+	mux.HandleFunc("/snippet/create", app.createSnippet)
 
 	// Create a file server which serves files out of the "./ui/static" directo
 	// Note that the path given to the http.Dir function is relative to the pro
@@ -30,7 +35,7 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	server:= http.Server{
+	server:= &http.Server{
 		Addr: *addr,
 		ErrorLog: errorLog,
 		Handler: mux,
