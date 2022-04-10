@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"flag"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/snippetbox/pkg/models/mysql"
 	"log"
 	"net/http"
 	"os"
