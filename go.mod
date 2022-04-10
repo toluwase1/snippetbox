@@ -1,4 +1,4 @@
-module toluthomas.com/snippetbox
+module github.com/toluwase1/snippetbox
 
 go 1.17
 
