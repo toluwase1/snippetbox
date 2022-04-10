@@ -3,7 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"github.com/snippetbox/pkg/models"
-	//"toluthomas.com/snippetbox/pkg/models"
+	"toluthomas.com/snippetbox/pkg/models"
 )
 
 // SnippetModel Define a SnippetModel type which wraps a sql.DB connection pool.
