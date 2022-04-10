@@ -3,16 +3,17 @@ package main
 import (
 	"database/sql"
 	"flag"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/snippetbox/pkg/models/mysql"
 	"log"
 	"net/http"
 	"os"
+	mysql2 "snippetbox/pkg/models/mysql"
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
-	snippets *mysql.SnippetModel
+	snippets mysql2.SnippetModel
 }
 
 func main() {
